@@ -181,46 +181,157 @@ boolean stateC;
 // Last time updateDemo() ran
 long lastMillis;
 
-// Initialize state for demo
-void createDemo()
-{
-  // On 1/2, off 1/2
-  onA[0] = periodA/2;
-  onA[1] = periodA/2;
-  lastA = 1;
-  indexA = -1;
-  // Wait for pulse from A to reach B
-  onB[0] = 0;
-  onB[1] = periodA;
-  // On 1/4, off 1/4, twice
-  onB[2] = periodB/4;
-  onB[3] = periodB/4;
-  onB[4] = periodB/4;
-  onB[5] = periodB/4;
-  lastB = 5;
-  indexB = -1;
-  // Wait for pulse from A to reach B
-  onC[0] = 0;
-  onC[1] = periodA;
-  // Wait for pulse from B to reach C
-  onC[2] = 0;
-  onC[3] = periodB;
-  // On 1/8, off 1/8, four times
-  onC[4] = periodC/8;
-  onC[5] = periodC/8;
-  onC[6] = periodC/8;
-  onC[7] = periodC/8;
-  onC[8] = periodC/8;
-  onC[9] = periodC/8;
-  onC[10] = periodC/8;
-  onC[11] = periodC/8;
-  // Wait for last pulse to finish
-  onC[11] = 0;
-  onC[11] = periodC*7/8;
-  lastC = 13;
-  indexC = -1;
+// Load the state variables for the demo
+void createDemo() {
+  int a = 0;
+  int b = 0;
+  int c = 0;
+  // Turn streams on, then off in order
+  onA[a++] = 9000;
+  onA[a++] = 9000;
+  onB[b++] = 0;
+  onB[b++] = 3000;
+  onB[b++] = 9000;
+  onB[b++] = 6000;
+  onC[c++] = 0;
+  onC[c++] = 6000;
+  onC[c++] = 9000;
+  onC[c++] = 3000;
+  // Turn all on at same time
+  onA[a++] = 3000;
+  onB[b++] = 3000;
+  onC[c++] = 3000;
+  // Turn all off at same time
+  onA[a++] = 3000;
+  onB[b++] = 3000;
+  onC[c++] = 3000;
+  // Make a pulse leap through each fountain
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA * 4/5;
+  onA[a++] = 0;
+  onA[a++] = periodB + periodC;
+  onB[b++] = 0;
+  onB[b++] = periodA;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB * 4/5;
+  onB[b++] = 0;
+  onB[b++] = periodC;
+  onC[c++] = 0;
+  onC[c++] = periodA + periodB;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC * 4/5;
+  // Make two pulses leap through each fountain
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA * 2/5;
+  onA[a++] = 0;
+  onA[a++] = periodB + periodC;
+  onB[b++] = 0;
+  onB[b++] = periodA;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB * 2/5;
+  onB[b++] = 0;
+  onB[b++] = periodC;
+  onC[c++] = 0;
+  onC[c++] = periodA + periodB;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC * 2/5;
+  // Make three pulses leap through each fountain
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA + periodB + periodC;
+  onB[b++] = 0;
+  onB[b++] = periodA;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB + periodC;
+  onC[c++] = 0;
+  onC[c++] = periodA + periodB;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;  
+  onC[c++] = periodC;
+  // Turn all on
+  onA[a++] = 2 * max(periodA, max(periodB, periodC));
+  onB[b++] = 2 * max(periodA, max(periodB, periodC));
+  onC[c++] = 2 * max(periodA, max(periodB, periodC));
+  // Make a break leap through each fountain
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA * 4/5 + periodB + periodC;
+  onB[b++] = 0;
+  onB[b++] = periodA;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB * 4/5 + periodC;
+  onC[c++] = 0;
+  onC[c++] = periodA + periodB;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC * 4/5;
+  // Make two breaks leap through
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA * 2/5 + periodB + periodC;
+  onB[b++] = 0;
+  onB[b++] = periodA;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB * 2/5 + periodC;
+  onC[c++] = 0;
+  onC[c++] = periodA + periodB;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC * 2/5;
+  // Make three breaks leap through
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodA / 5;
+  onA[a++] = periodB + periodC + periodC;
+  onA[a++] = periodC;
+  onB[b++] = 0;
+  onB[b++] = periodA;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodB / 5;
+  onB[b++] = periodC + periodC;
+  onB[b++] = periodC;
+  onC[c++] = 0;
+  onC[c++] = periodA + periodB;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC / 5;
+  onC[c++] = periodC;
+  onC[c++] = periodC;
+  
+  // End program
+  lastA = a;
+  lastB = b;
+  lastC = c;
   
   // Init state
+  indexA = -1;
+  indexB = -1;
+  indexC = -1;
   stateA = false;
   stateB = false;
   stateC = false;
